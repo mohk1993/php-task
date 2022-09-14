@@ -36,6 +36,65 @@ class ProductController extends Controller
     {
         $products = $this->productService->getAll();
 
-        return view('products.products',compact('products'));
+        return view('products.products', compact('products'));
+    }
+
+    /**
+     * Redirect to the add_product page
+     * @return resource add_product page view to be redirect to
+     */
+    public function viewAddProduct()
+    {
+        return view('products.add_product');
+    }
+
+    /**
+     * Redirect to the udate page 
+     * @param mixed $id
+     * @return resource update page with injected product information
+     */
+    public function viewUpdateProduct($id)
+    {
+        $productI = $this->productService->getById($id);
+        
+        return view('products.update', compact('productI'));
+    }
+
+    /**
+     * Store product data
+     * @param Request $request
+     * @return resource redirect back
+     * 
+     */
+    public function addProduct(Request $request)
+    {
+        $data = $this->productService->saveProductData($request);
+
+        return redirect()->back();
+    }
+
+    /**
+     * Update product data in the DB
+     * @param Request $request
+     * @param mixed $id
+     * @return resource redirect to products view page
+     */
+    public function update(Request $request, $id)
+    {
+        $result = $this->productService->updateProduct($request, $id);
+
+        return view('products.update');
+    }
+
+    /**
+     * Delete product by id
+     * @param mixed $id
+     * @return resource to redirect to dashboard
+     */
+    public function delete($id)
+    {
+        $product = $this->productService->deleteById($id);
+
+        return view('dashboard');
     }
 }
