@@ -21,4 +21,6 @@ Route::middleware('product')->group(function () {
 
     Route::get('delete/{id}', [ProductController::class, 'delete'])
                 ->name('product.delete');
+
+    Route::get('info/{id}',[ProductController::class,'viewInfo'])->name('info.product');
 });

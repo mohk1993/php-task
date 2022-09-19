@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Product;
 
@@ -40,6 +40,18 @@ class ProductController extends Controller
     }
 
     /**
+     * Redirect to the product details with the resource
+     * @param mixed $id
+     * @return resource product_detail page view to be redirected to
+     */
+    public function viewInfo($id)
+    {
+        $productInfo = $this->getProductById($id);
+
+        return view('products.product_details',compact('productInfo'));
+    }
+
+    /**
      * Redirect to the add_product page
      * @return resource add_product page view to be redirect to
      */
@@ -56,15 +68,26 @@ class ProductController extends Controller
     public function viewUpdateProduct($id)
     {
         $productI = $this->productService->getById($id);
-        
+
         return view('products.update', compact('productI'));
+    }
+
+    /**
+     * Get the specfied product by the id
+     * @param mixed $id
+     * @return mixed the specified product fields
+     */
+    public function getProductById($id)
+    {
+        $result = $this->productService->getById($id);
+
+        return $result;
     }
 
     /**
      * Store product data
      * @param Request $request
      * @return resource redirect back
-     * 
      */
     public function addProduct(Request $request)
     {

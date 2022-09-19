@@ -14,6 +14,7 @@
                         <th scope="col">Color</th>
                         <th scope="col">Active</th>
                         <th scope="col">Image/s</th>
+                        <th scope="col">Info</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -30,6 +31,7 @@
                         <td><span class="badge text-bg-danger">InActive</span></td>
                         @endif
                         <td><img src="{{$product->image}}" alt="" style="height: 50px; width: 50px;"></td>
+                        <td><a href="{{ route('info.product', $product->id) }}"><i class="fa fa-info-circle"></i></a></td>
                         <td>
                             <div class="d-grid gap-2 col-6 mx-auto">
                                 <a href="{{ route('product.update.view', $product->id) }}" class="btn btn-primary" type="button">Update</a>
