@@ -23,6 +23,10 @@ class ProductFactory extends Factory
             'weight' => $this->faker->randomFloat(2, 1, 4),
             'color' => $this->faker->colorName(),
             'active' => $this->faker->boolean(),
+            'price' => $this->faker->randomFloat(2, 1, 4),
+            'quantity' => $this->faker->numberBetween(1, 100),
+            'created_at' =>$this->faker->date(),
+            'updated_at' =>$this->faker->date(),
             'image' => $this->faker->imageUrl(640, 480, 'sports', true, true)
         ];
     }
