@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Services\ProductService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 /**
  * class ProductController
@@ -17,7 +20,7 @@ class ProductController extends Controller
     /**
      * @var ProductService
      */
-    private $productService;
+    private ProductService $productService;
 
     /**
      * ProductService constructor
@@ -30,9 +33,9 @@ class ProductController extends Controller
 
     /**
      * Display a listing of the products
-     * @return resource the page to be redirect to
+     * @return View
      */
-    public function viewProducts()
+    public function view(): View
     {
         $products = $this->productService->getAll();
 
@@ -41,57 +44,66 @@ class ProductController extends Controller
 
     /**
      * Redirect to the product details with the resource
-     * @param mixed $id
-     * @return resource product_detail page view to be redirected to
+     * @param int $id
+     * @return View
      */
-    public function viewInfo($id)
+    public function viewInfo(int $id): View
     {
-        $productInfo = $this->getProductById($id);
+        $productInfo = $this->getById($id);
 
-        return view('products.product_details',compact('productInfo'));
+        return view('products.product_details', compact('productInfo'));
+    }
+
+    /**
+     * Get the specified product by the id
+     * @param int $id
+     * @return Product
+     */
+    public function getById(int $id): Product
+    {
+        return $this->productService->getById($id);
     }
 
     /**
      * Redirect to the add_product page
-     * @return resource add_product page view to be redirect to
+     * @return View
      */
-    public function viewAddProduct()
+    public function viewAdd(): View
     {
         return view('products.add_product');
     }
 
     /**
-     * Redirect to the udate page 
-     * @param mixed $id
-     * @return resource update page with injected product information
+     * Redirect to the update page
+     * @param int $id
+     * @return View
      */
-    public function viewUpdateProduct($id)
+    public function viewUpdate(int $id): View
     {
         $productI = $this->productService->getById($id);
 
         return view('products.update', compact('productI'));
     }
 
-    /**
-     * Get the specfied product by the id
-     * @param mixed $id
-     * @return mixed the specified product fields
-     */
-    public function getProductById($id)
-    {
-        $result = $this->productService->getById($id);
+    /*     public function chart($labels, $dataset, $name)
+        {
+            $chart = new PriceHistory;
 
-        return $result;
-    }
+            $chart->labels([$labels]);
+            $chart->dataset($name,'doughnut',[$dataset])->options([
+                'borderColor' => '#55557E', 'backgroundColor'=>'66654R']);
+
+            return $chart;
+        } */
 
     /**
      * Store product data
      * @param Request $request
-     * @return resource redirect back
+     * @return RedirectResponse
      */
-    public function addProduct(Request $request)
+    public function add(Request $request): RedirectResponse
     {
-        $data = $this->productService->saveProductData($request);
+        $this->productService->saveData($request);
 
         return redirect()->back();
     }
@@ -99,24 +111,24 @@ class ProductController extends Controller
     /**
      * Update product data in the DB
      * @param Request $request
-     * @param mixed $id
-     * @return resource redirect to products view page
+     * @param int $id
+     * @return View
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): View
     {
-        $result = $this->productService->updateProduct($request, $id);
+        $this->productService->update($request, $id);
 
         return view('products.update');
     }
 
     /**
      * Delete product by id
-     * @param mixed $id
-     * @return resource to redirect to dashboard
+     * @param int $id
+     * @return View
      */
-    public function delete($id)
+    public function delete(int $id): View
     {
-        $product = $this->productService->deleteById($id);
+        $this->productService->deleteById($id);
 
         return view('dashboard');
     }

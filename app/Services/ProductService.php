@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Services;
 
 use App\Models\Product;
 use App\Repositories\ProductRepository;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use InvalidArgumentException;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Class ProductService
@@ -18,9 +16,9 @@ use InvalidArgumentException;
 class ProductService
 {
     /**
-     * @var $productRepositoy
+     * @var ProductRepository
      */
-    protected $productRepositoy;
+    protected ProductRepository $productRepository;
 
     /**
      * ProductService constructor
@@ -28,84 +26,99 @@ class ProductService
      */
     public function __construct(ProductRepository $productRepository)
     {
-        $this->productRepositoy = $productRepository;
+        $this->productRepository = $productRepository;
     }
 
     /**
      * Get all products
-     * @return String
+     * @return LengthAwarePaginator
      */
-    public function getAll()
+    public function getAll(): LengthAwarePaginator
     {
-        return $this->productRepositoy->getAllProducts();
+        return $this->productRepository->getAll();
+    }
+
+    /**
+     * @param Product $data
+     * @return void
+     */
+    public function addPriceHistory(Product $data): void
+    {
+        $this->productRepository->addPriceToHistory($data);
+    }
+
+    /**
+     * @param Product $data
+     * @return void
+     */
+    public function addQuantityHistory(Product $data): void
+    {
+        $this->productRepository->addQuantityToHistory($data);
     }
 
     /**
      * Save to DB if there are no errors
-     * @param mixed $request
-     * @return String
+     * @param Request $request
+     * @return Product
      */
-    public function saveProductData($request)
+    public function saveData(Request $request): Product
     {
-        if($this->isValid($request))
-        {
-            $result = $this->productRepositoy->save($request);
-        }
-
-        return $result;
+        return $this->productRepository->save($request, $this->getImageUrl($request));
     }
 
-   
+    /**
+     * Save the image to a specific location and get the url
+     * @param Request $request
+     * @return string
+     */
+    protected function getImageUrl(Request $request): string
+    {
+        $image = $request->file('image');
+        @unlink(public_path('public/images/product_images/' . $request->image));
+        $image_name = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('public/images/product_images'), $image_name);
+
+        return 'public/images/product_images' . $image_name;
+    }
+
     /**
      * Update in the DB if there are no errors
-     * @param mixed $request
-     * @param mixed $id
-     * @return String
+     * @param Request $request
+     * @param int $id
+     * @return Product
      */
-    public function updateProduct($request, $id)
+    public function update(Request $request, int $id): Product
     {
-        DB::beginTransaction();
-        $product = $this->productRepositoy->update($request, $id);
-        DB::commit();
-
-        return $product;
+        return $this->productRepository->update($request, $id, $this->getImageUrl($request));
     }
 
     /**
      * Get the specified product by id
-     * @param mixed $id
-     * @return String
+     * @param int $id
+     * @return Product
      */
-    public function getById($id)
+    public function getById(int $id): Product
     {
-        return $this->productRepositoy->getProductById($id);
+        return $this->productRepository->getById($id);
     }
 
     /**
      * Delete product by id
-     * @param mixed $id
-     * @return String
+     * @param int $id
+     * @return bool
      */
-    public function deleteById($id)
+    public function deleteById(int $id): bool
     {
-        return $this->productRepositoy->deleteProductById($id);
+        return $this->productRepository->deleteById($id);
     }
 
-    /**
-     * Check if the request is valid
-     * @param mixed $request
-     * @return boolean
-     */
-    public function isValid($request)
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'ean' => ['required', 'string', 'max:13'],
-            'weight' => ['required','numeric'],
-            'color' => ['required', 'string'],
-            'image' => ['required'],
-        ]); 
+    /*     public function getPriceHistory($product)
+        {
+            $priceHistory = Product::select('price')->where('id',$product->id)->where( 'created_at', '>', Carbon::now()->subDays(30))->get();
+        } */
 
-        return true;
-    }
+    /*     public function getQuantityHistory($product)
+        {
+
+        } */
 }

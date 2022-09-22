@@ -1,20 +1,26 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Events\PriceHistoryCreated;
+use App\Events\QuantityHistoryCreated;
+use App\Models\PriceHistory;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 /**
  * Class ProductRepository
- * @package App\Repositories 
+ * @package App\Repositories
  */
 class ProductRepository
 {
     /**
      * @var Product
      */
-    protected $product;
+    protected Product $product;
 
     /**
      * ProductRepository constructor
@@ -27,84 +33,113 @@ class ProductRepository
 
     /**
      * Get all products
-     * @return Product
+     * @return LengthAwarePaginator
      */
-    public function getAllProducts()
+    public function getAll(): LengthAwarePaginator
     {
         return $this->product::paginate(5);
     }
 
     /**
-     * Save Product to DB
-     * @param mixed $reqest
+     * Update product data in the DB
+     * @param Request $request
+     * @param int $id
+     * @param string $getImageUrl
      * @return Product
      */
-    public function save($reqest)
+    public function update(Request $request, int $id, string $getImageUrl): Product
     {
-        $product = $this->product;
-        $product->name =$reqest['name'];
-        $product->ean =$reqest['ean'];
-        $product->weight =$reqest['weight'];
-        $product->color =$reqest['color'];
-        $product->image =$this->getImageUrl($reqest);
+        $product = $this->product->find($id);
+        $product->name = $request['name'];
+        $product->ean = $request['ean'];
+        $product->weight = $request['weight'];
+        $product->color = $request['color'];
+        $product->quantity = $request['quantity'];
+        $product->price = $request['price'];
+        $product->image = $getImageUrl;
         $product->save();
-        
+
+        event(new PriceHistoryCreated($product));
+        event(new QuantityHistoryCreated($product));
+
         return $product;
     }
 
     /**
-     * Update product data in the DB
-     * @param mixed $request
-     * @param mixed $id
+     * Save Product to DB
+     * @param Request $request
+     * @param string $getImageUrl
      * @return Product
-     * 
      */
-    public function update($request, $id)
+    public function save(Request $request, string $getImageUrl): Product
     {
-        $product = $this->product->find($id);
-        $product->name =$request['name'];
-        $product->ean =$request['ean'];
-        $product->weight =$request['weight'];
-        $product->color =$request['color'];
-        $product->image =$this->getImageUrl($request);
+        $product = $this->product;
+        $product->name = $request['name'];
+        $product->ean = $request['ean'];
+        $product->weight = $request['weight'];
+        $product->color = $request['color'];
+        $product->quantity = $request['quantity'];
+        $product->price = $request['price'];
+        $product->image = $getImageUrl;
         $product->save();
-        
+
+        event(new PriceHistoryCreated($product));
+        event(new QuantityHistoryCreated($product));
+
         return $product;
     }
+
+    /**
+     * @param Product $data
+     * @return void
+     */
+    public function addPriceToHistory(Product $data): void
+    {
+        PriceHistory::create([
+            'product_id' => $data->id,
+            'price' => $data->price
+        ]);
+    }
+
+    /**
+     * @param Product $data
+     * @return void
+     */
+    public function addQuantityToHistory(Product $data): void
+    {
+        PriceHistory::create([
+            'product_id' => $data->id,
+            'price' => $data->price
+        ]);
+    }
+
+    /*     public function getPriceHistory($product)
+        {
+            $productHistory = Product::select('price')->where('id',$product->id)->where( 'created_at', '>', Carbon::now()->subDays(30))->get();
+        }  */
+
+    /*     public function getQuantityHistory($product)
+        {
+
+        }  */
 
     /**
      * Get product by id
-     * @param mixed $id
+     * @param int $id
      * @return Product
      */
-    public function getProductById($id)
+    public function getById(int $id): Product
     {
         return $this->product::findOrFail($id);
     }
 
     /**
      * Delete product by id
-     * @param mixed $id
-     * @return Product
+     * @param int $id
+     * @return bool
      */
-    public function deleteProductById($id)
+    public function deleteById(int $id): bool
     {
         return $this->product::findOrFail($id)->delete();
-    }
-
-    /**
-     * Save the image to a specific location and get the url
-     * @param mixed $reqest
-     * @return String
-     */
-    protected function getImageUrl($reqest)
-    {
-        $image = $reqest->file('image');
-        @unlink(public_path('public/images/product_images/'.$reqest->image));
-        $image_name = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
-        $image->move(public_path('public/images/product_images'),$image_name);
-        $image_url = 'public/images/product_images'.$image_name;
-
-        return $image_url;
     }
 }
