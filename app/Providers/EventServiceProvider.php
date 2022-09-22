@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\PriceHistoryCreated;
+use App\Events\ProductHistoryCreated;
+use App\Events\QuantityHistoryCreated;
+use App\Listeners\AddPriceToPriceHistoryTable;
+use App\Listeners\AddQuantityToQuantityHistoryTable;
+use App\Listeners\SendProductDataToDatabaseHistory;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +24,18 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        
+        ProductHistoryCreated::class => [
+            SendProductDataToDatabaseHistory::class,
+        ],
+
+        PriceHistoryCreated::class => [
+            AddPriceToPriceHistoryTable::class,
+        ],
+
+        QuantityHistoryCreated::class => [
+            AddQuantityToQuantityHistoryTable::class,
+        ]
     ];
 
     /**
