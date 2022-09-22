@@ -24,10 +24,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        
-        ProductHistoryCreated::class => [
-            SendProductDataToDatabaseHistory::class,
-        ],
 
         PriceHistoryCreated::class => [
             AddPriceToPriceHistoryTable::class,
