@@ -8,6 +8,7 @@ use App\Events\PriceHistoryCreated;
 use App\Events\QuantityHistoryCreated;
 use App\Models\PriceHistory;
 use App\Models\Product;
+use App\Models\QuantityHistory;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -107,9 +108,9 @@ class ProductRepository
      */
     public function addQuantityToHistory(Product $data): void
     {
-        PriceHistory::create([
+        QuantityHistory::create([
             'product_id' => $data->id,
-            'price' => $data->price
+            'quantity' => $data->quantity
         ]);
     }
 
