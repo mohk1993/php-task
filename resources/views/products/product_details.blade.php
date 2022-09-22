@@ -13,7 +13,7 @@
 </ul>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="product-details-tab-pane" role="tabpanel" aria-labelledby="product-details-tab" tabindex="0">
-        Hello form tab one
+    {!! $chart->container() !!}
     </div>
     <div class="tab-pane fade" id="price-history-tab-pane" role="tabpanel" aria-labelledby="price-history-tab" tabindex="0">
         Hello form tab two
@@ -25,3 +25,7 @@
 
 
 @include('products.footer')
+{!! $chart->script() !!}
+</body>
+
+</html>

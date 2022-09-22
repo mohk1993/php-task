@@ -4,16 +4,16 @@ use App\Http\Controllers\Product\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('product')->group(function () {
-    Route::get('view', [ProductController::class, 'viewProducts'])
+    Route::get('view', [ProductController::class, 'view'])
                 ->name('products.view');
 
-    Route::get('view-add', [ProductController::class, 'viewAddProduct'])
+    Route::get('view-add', [ProductController::class, 'viewAdd'])
                 ->name('product.add.view');
 
-    Route::get('view-update/{id}', [ProductController::class, 'viewUpdateProduct'])
+    Route::get('view-update/{id}', [ProductController::class, 'viewUpdate'])
                 ->name('product.update.view');
-    
-    Route::post('add', [ProductController::class, 'addProduct'])
+
+    Route::post('add', [ProductController::class, 'add'])
                 ->name('product.add');
 
     Route::post('update/{id}', [ProductController::class, 'update'])

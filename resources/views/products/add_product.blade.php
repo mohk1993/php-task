@@ -19,9 +19,19 @@
                 <div id="weightl" class="form-text">Please enter the product weight.</div>
             </div>
             <div class="mb-3">
-                <label for="color" class="form-label">Produc Wolor</label>
+                <label for="color" class="form-label">Produc Color</label>
                 <input type="text" class="form-control" name="color" id="color" aria-describedby="colorl" required>
                 <div id="colorl" class="form-text">Please enter the product color.</div>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Produc Price</label>
+                <input type="number" min="0" step="0.1" max="10000" oninput="validty.valid||(value='');" class="form-control" name="price" id="price" aria-describedby="price1" required>
+                <div id="price1" class="form-text">Please enter the product price.</div>
+            </div>
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Produc Quantity</label>
+                <input type="number" class="form-control" name="quantity" min="0" max="1000" id="quantity" aria-describedby="quantity1" required>
+                <div id="quantity1" class="form-text">Please enter the product number.</div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="status">Product Image</label>
