@@ -9,15 +9,13 @@ class QuantityHistory extends Model
 {
     use HasFactory;
 
-         /**
+     /**
      * fillable
      *
      * @var array
      */
     protected $fillable = [
         'product_id',
-        'type',
-        'old_quantity',
-        'new_quantity',
+        'quantity',
     ];
 }

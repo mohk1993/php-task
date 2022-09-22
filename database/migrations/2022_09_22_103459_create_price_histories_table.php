@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('quantity_histories', function (Blueprint $table) {
+        Schema::create('price_histories', function (Blueprint $table) {
             $table->id();
-            $table->integer('Product_id');
-            $table->string('type');
-            $table->double('old_quantity', 8, 2);
-            $table->double('new_quantity', 8, 2);
+            $table->integer('product_id');
+            $table->double('price', 8, 2);
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quantity_histories');
+        Schema::dropIfExists('price_histories');
     }
 };
