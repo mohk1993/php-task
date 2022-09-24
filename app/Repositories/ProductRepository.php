@@ -9,6 +9,8 @@ use App\Events\QuantityHistoryCreated;
 use App\Models\PriceHistory;
 use App\Models\Product;
 use App\Models\QuantityHistory;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -103,6 +105,16 @@ class ProductRepository
     }
 
     /**
+     * @param int $id
+     * @return Collection
+     */
+    public function getPriceHistory(int $id): Collection
+    {
+         return PriceHistory::where('product_id', $id)
+            ->where('created_at', '>', Carbon::now()->subDays(90))->pluck('price','created_at');
+    }
+
+    /**
      * @param Product $data
      * @return void
      */
@@ -113,16 +125,6 @@ class ProductRepository
             'quantity' => $data->quantity
         ]);
     }
-
-    /*     public function getPriceHistory($product)
-        {
-            $productHistory = Product::select('price')->where('id',$product->id)->where( 'created_at', '>', Carbon::now()->subDays(30))->get();
-        }  */
-
-    /*     public function getQuantityHistory($product)
-        {
-
-        }  */
 
     /**
      * Get product by id

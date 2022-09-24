@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\PriceHistory;
+use \App\Charts\PriceHistoryChart;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -45,6 +48,29 @@ class ProductService
     public function addPriceHistory(Product $data): void
     {
         $this->productRepository->addPriceToHistory($data);
+    }
+
+    /**
+     * @param int $id
+     * @return PriceHistoryChart
+     */
+    public function getPriceHistory(int $id): PriceHistoryChart
+    {
+        $priceHistory = $this->productRepository->getPriceHistory($id);
+
+        return $this->priceHistoryChart($priceHistory);
+    }
+
+    /**
+     * @param Collection  $priceData
+     * @return PriceHistoryChart
+     */
+    public function priceHistoryChart(Collection $priceData): PriceHistoryChart
+    {
+        $chart = new PriceHistoryChart;
+        $chart->labels($priceData->keys());
+        $chart->dataset('Price History', 'line', $priceData->values());
+        return $chart;
     }
 
     /**
@@ -111,14 +137,4 @@ class ProductService
     {
         return $this->productRepository->deleteById($id);
     }
-
-    /*     public function getPriceHistory($product)
-        {
-            $priceHistory = Product::select('price')->where('id',$product->id)->where( 'created_at', '>', Carbon::now()->subDays(30))->get();
-        } */
-
-    /*     public function getQuantityHistory($product)
-        {
-
-        } */
 }

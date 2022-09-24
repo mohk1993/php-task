@@ -45,9 +45,9 @@ class ProductController extends Controller
     /**
      * Redirect to the product details with the resource
      * @param int $id
-     * @return View
+     * @return view
      */
-    public function viewInfo(int $id): View
+    public function viewInfo(int $id): view
     {
         $productInfo = $this->getById($id);
 
@@ -84,17 +84,6 @@ class ProductController extends Controller
 
         return view('products.update', compact('productI'));
     }
-
-    /*     public function chart($labels, $dataset, $name)
-        {
-            $chart = new PriceHistory;
-
-            $chart->labels([$labels]);
-            $chart->dataset($name,'doughnut',[$dataset])->options([
-                'borderColor' => '#55557E', 'backgroundColor'=>'66654R']);
-
-            return $chart;
-        } */
 
     /**
      * Store product data
