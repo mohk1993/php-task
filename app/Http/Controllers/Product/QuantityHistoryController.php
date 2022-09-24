@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\ProductService;
 use Illuminate\View\View;
 
-class PriceHistoryController extends Controller
+class QuantityHistoryController extends Controller
 {
     /**
      * @var ProductService
@@ -26,11 +26,11 @@ class PriceHistoryController extends Controller
      * @param int $id
      * @return view
      */
-    public function getPriceHistoryChart(int $id): view
+    public function getQuantityHistoryChart(int $id): view
     {
-        $priceChart = $this->productService->getPriceHistory($id);
+        $quantityChart = $this->productService->getQuantityHistory($id);
         $productInfo = $this->productService->getById($id);
 
-        return view('products.product_details', compact('productInfo', 'priceChart'));
+        return view('products.product_details', compact('productInfo', 'quantityChart'));
     }
 }

@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\PriceHistory;
 use App\Models\Product;
+use App\Models\QuantityHistory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,6 +26,6 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         //Product::factory(20)->create();
-        PriceHistory::factory(50)->create();
+        QuantityHistory::factory(50)->create();
     }
 }

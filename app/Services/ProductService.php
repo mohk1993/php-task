@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\PriceHistory;
-use \App\Charts\PriceHistoryChart;
+use App\Charts\PriceHistoryChart;
+use App\Charts\QuantityHistoryChart;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
-use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 /**
  * Class ProductService
@@ -62,7 +62,7 @@ class ProductService
     }
 
     /**
-     * @param Collection  $priceData
+     * @param Collection $priceData
      * @return PriceHistoryChart
      */
     public function priceHistoryChart(Collection $priceData): PriceHistoryChart
@@ -70,6 +70,29 @@ class ProductService
         $chart = new PriceHistoryChart;
         $chart->labels($priceData->keys());
         $chart->dataset('Price History', 'line', $priceData->values());
+        return $chart;
+    }
+
+    /**
+     * @param int $id
+     * @return QuantityHistoryChart
+     */
+    public function getQuantityHistory(int $id): QuantityHistoryChart
+    {
+        $quantityHistory = $this->productRepository->getQuantityHistory($id);
+
+        return $this->quantityHistoryChart($quantityHistory);
+    }
+
+    /**
+     * @param Collection $quantityData
+     * @return QuantityHistoryChart
+     */
+    public function quantityHistoryChart(Collection $quantityData): QuantityHistoryChart
+    {
+        $chart = new QuantityHistoryChart();
+        $chart->labels($quantityData->keys());
+        $chart->dataset('Quantity History', 'line', $quantityData->values());
         return $chart;
     }
 

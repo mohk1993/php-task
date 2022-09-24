@@ -4,28 +4,28 @@
 @endphp
 
 @include('products.header')
-                        {{-- Tabs Header --}}
+{{-- Tabs Header --}}
 <ul class="nav nav-tabs" id="productInfo" role="tablist">
-                        {{-- Tab-item for product details --}}
+    {{-- Tab-item for product details --}}
     <li class="nav-item" role="presentation">
         <a class="nav-link {{ request()->is('info/'.$productInfo->id) ? 'active' : null }}"
            href="{{ route('info.product', $productInfo->id) }}" type="button" role="tab">Product Details
         </a>
     </li>
-                        {{-- Tab-item for product price hisory --}}
+    {{-- Tab-item for product price hisory --}}
     <li class="nav-item" role="presentation">
         <a class="nav-link {{ request()->is('price-history/'.$productInfo->id) ? 'active' : null }}"
            href="{{ route('history.price', $productInfo->id) }}" type="button" role="tab">Price History</a>
     </li>
-                        {{-- Tab-item for product quantity history --}}
+    {{-- Tab-item for product quantity history --}}
     <li class="nav-item" role="presentation">
         <a class="nav-link {{ request()->is('quantity-history/'.$productInfo->id) ? 'active' : null }}"
-           id="quantity-tab" type="button" role="tab">Quantity History</a>
+           href="{{ route('history.quantity', $productInfo->id) }}" type="button" role="tab">Quantity History</a>
     </li>
 </ul>
-                        {{-- Tabs content --}}
+{{-- Tabs content --}}
 <div class="tab-content" id="productInfoContent">
-                        {{-- Tab-pan for product details --}}
+    {{-- Tab-pan for product details --}}
     <div class="tab-pane {{ request()->is('info/'.$productInfo->id) ? 'active' : null }}"
          id="{{ route('info.product', $productInfo->id) }}" role="tabpanel" aria-labelledby="home-info-tab"
          tabindex="0">
@@ -66,7 +66,7 @@
             </div>
         </div>
     </div>
-                        {{-- Tab-pan for product Price Chart --}}
+    {{-- Tab-pan for product Price Chart --}}
     <div class="tab-pane {{ request()->is('price-history/'.$productInfo->id) ? 'active' : null }}"
          id="{{ route('history.price', $productInfo->id) }}" role="tabpanel" aria-labelledby="price-tab" tabindex="0">
         @if(request()->is('price-history/'.$productInfo->id))
@@ -79,11 +79,32 @@
             }
         @endif
     </div>
-                        {{-- Tab-pan for product quantity Chart --}}
+    {{-- Tab-pan for product quantity Chart --}}
     <div class="tab-pane {{ request()->is('quantity-history/'.$productInfo->id) ? 'active' : null }}"
-         id="#" role="tabpanel" aria-labelledby="quantity-tab"
+         id="{{ route('history.quantity', $productInfo->id) }}" role="tabpanel" aria-labelledby="quantity-tab"
          tabindex="0">
-
+        @if(request()->is('quantity-history/'.$productInfo->id))
+            {
+            <div class="container">
+                <p class="text-center">
+                <h1 class="text-center"> Quantity History Chart </h1> </p>
+                {!! $quantityChart->container() !!}
+            </div>
+            }
+        @endif
     </div>
 </div>
 @include('products.footer')
+
+@if(request()->is('price-history/'.$productInfo->id))
+    {
+    {!! $priceChart->script() !!}
+    }
+@endif
+@if(request()->is('quantity-history/'.$productInfo->id))
+    {
+    {!! $quantityChart->script() !!}
+    }
+    @endif
+    </body>
+    </html>

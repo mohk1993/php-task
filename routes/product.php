@@ -26,3 +26,4 @@ Route::middleware('product')->group(function () {
 });
 
 require __DIR__ . '/price.php';
+require __DIR__ . '/quantity.php';

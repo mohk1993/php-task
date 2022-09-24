@@ -115,6 +115,16 @@ class ProductRepository
     }
 
     /**
+     * @param int $id
+     * @return Collection
+     */
+    public function getQuantityHistory(int $id): Collection
+    {
+        return QuantityHistory::where('product_id', $id)
+            ->where('created_at', '>', Carbon::now()->subDays(90))->pluck('quantity','created_at');
+    }
+
+    /**
      * @param Product $data
      * @return void
      */
