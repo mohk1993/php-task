@@ -10,9 +10,10 @@ use App\Models\PriceHistory;
 use App\Models\Product;
 use App\Models\QuantityHistory;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Class ProductRepository
@@ -40,7 +41,9 @@ class ProductRepository
      */
     public function getAll(): LengthAwarePaginator
     {
-        return $this->product::paginate(5);
+        return Cache::remember('productList-page-' . request('page', 1), now()->addMinutes(5), function () {
+            return $this->product::paginate(5);
+        });
     }
 
     /**
@@ -102,6 +105,8 @@ class ProductRepository
             'product_id' => $data->id,
             'price' => $data->price
         ]);
+
+        Cache::flush();
     }
 
     /**
@@ -110,8 +115,8 @@ class ProductRepository
      */
     public function getPriceHistory(int $id): Collection
     {
-         return PriceHistory::where('product_id', $id)
-            ->where('created_at', '>', Carbon::now()->subDays(90))->pluck('price','created_at');
+        return PriceHistory::where('product_id', $id)
+            ->where('created_at', '>', Carbon::now()->subDays(90))->pluck('price', 'created_at');
     }
 
     /**
@@ -121,7 +126,7 @@ class ProductRepository
     public function getQuantityHistory(int $id): Collection
     {
         return QuantityHistory::where('product_id', $id)
-            ->where('created_at', '>', Carbon::now()->subDays(90))->pluck('quantity','created_at');
+            ->where('created_at', '>', Carbon::now()->subDays(90))->pluck('quantity', 'created_at');
     }
 
     /**
@@ -146,13 +151,15 @@ class ProductRepository
         return $this->product::findOrFail($id);
     }
 
+
     /**
-     * Delete product by id
      * @param int $id
-     * @return bool
+     * @return void
      */
-    public function deleteById(int $id): bool
+    public function deleteById(int $id): void
     {
-        return $this->product::findOrFail($id)->delete();
+        $this->product::findOrFail($id)->delete();
+
+        Cache::flush();
     }
 }

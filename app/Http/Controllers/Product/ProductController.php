@@ -35,7 +35,7 @@ class ProductController extends Controller
      * Display a listing of the products
      * @return View
      */
-    public function view(): View
+    public function view(): view
     {
         $products = $this->productService->getAll();
 

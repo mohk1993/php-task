@@ -151,13 +151,13 @@ class ProductService
         return $this->productRepository->getById($id);
     }
 
+
     /**
-     * Delete product by id
      * @param int $id
-     * @return bool
+     * @return void
      */
-    public function deleteById(int $id): bool
+    public function deleteById(int $id): void
     {
-        return $this->productRepository->deleteById($id);
+        $this->productRepository->deleteById($id);
     }
 }
