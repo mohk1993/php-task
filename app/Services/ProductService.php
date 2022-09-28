@@ -8,9 +8,13 @@ use App\Charts\PriceHistoryChart;
 use App\Charts\QuantityHistoryChart;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Class ProductService
@@ -149,6 +153,16 @@ class ProductService
     public function getById(int $id): Product
     {
         return $this->productRepository->getById($id);
+    }
+
+    /**
+     * @param Request $request
+     * @return Application|ResponseFactory|Response
+     * @throws ValidationException
+     */
+    public function logIn(Request $request): Application|ResponseFactory|Response
+    {
+        return $this->productRepository->logIn($request);
     }
 
 

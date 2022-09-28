@@ -31,8 +31,8 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
+
     /**
-     * Display a listing of the products
      * @return View
      */
     public function view(): view

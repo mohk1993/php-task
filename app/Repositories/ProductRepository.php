@@ -9,11 +9,17 @@ use App\Events\QuantityHistoryCreated;
 use App\Models\PriceHistory;
 use App\Models\Product;
 use App\Models\QuantityHistory;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Class ProductRepository
@@ -33,6 +39,35 @@ class ProductRepository
     public function __construct(Product $product)
     {
         $this->product = $product;
+    }
+
+    /**
+     * @param Request $request
+     * @return Application|ResponseFactory|Response
+     * @throws ValidationException
+     */
+    public function logIn(Request $request): Application|ResponseFactory|Response
+    {
+
+        $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw validationException::withMessages([
+                'email' => ['incorrect ']
+            ]);
+        }
+        $token = $user->createToken('myapp-token')->plainTextToken;
+        $response = [
+            'user' => $user,
+            'token' => $token
+        ];
+
+        return response($response, 201);
     }
 
     /**
