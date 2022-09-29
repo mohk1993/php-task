@@ -156,17 +156,6 @@ class ProductService
     }
 
     /**
-     * @param Request $request
-     * @return Application|ResponseFactory|Response
-     * @throws ValidationException
-     */
-    public function logIn(Request $request): Application|ResponseFactory|Response
-    {
-        return $this->productRepository->logIn($request);
-    }
-
-
-    /**
      * @param int $id
      * @return void
      */

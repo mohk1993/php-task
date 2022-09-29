@@ -42,35 +42,6 @@ class ProductRepository
     }
 
     /**
-     * @param Request $request
-     * @return Application|ResponseFactory|Response
-     * @throws ValidationException
-     */
-    public function logIn(Request $request): Application|ResponseFactory|Response
-    {
-
-        $request->validate([
-            'email' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw validationException::withMessages([
-                'email' => ['incorrect ']
-            ]);
-        }
-        $token = $user->createToken('myapp-token')->plainTextToken;
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-
-        return response($response, 201);
-    }
-
-    /**
      * Get all products
      * @return LengthAwarePaginator
      */
