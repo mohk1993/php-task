@@ -2,6 +2,7 @@
     $prefix = Request::url();
     $route = Route::current()->getName();
 @endphp
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -14,26 +15,27 @@
     <ul class="nav nav-tabs" id="productInfo" role="tablist">
         {{-- Tab-item for product details --}}
         <li class="nav-item" role="presentation">
-            <a class="nav-link {{ request()->is('info/'.$productInfo->id) ? 'active' : null }}"
-               href="{{ route('info.product', $productInfo->id) }}" type="button" role="tab">@lang('product.details')
+            <a class="nav-link {{ request()->is('products/'.$productInfo->id) ? 'active' : null }}"
+               href="{{ route('product.show', $productInfo->id) }}" type="button" role="tab">@lang('product.details')
             </a>
         </li>
+        
         {{-- Tab-item for product price hisory --}}
         <li class="nav-item" role="presentation">
-            <a class="nav-link {{ request()->is('price-history/'.$productInfo->id) ? 'active' : null }}"
-               href="{{ route('history.price', $productInfo->id) }}" type="button" role="tab">@lang('product.price_history')</a>
+            <a class="nav-link {{ request()->is('products/'.$productInfo->id.'/price') ? 'active' : null }}"
+               href="{{ route('price.show', $productInfo->id) }}" type="button" role="tab">@lang('product.price_history')</a>
         </li>
         {{-- Tab-item for product quantity history --}}
         <li class="nav-item" role="presentation">
-            <a class="nav-link {{ request()->is('quantity-history/'.$productInfo->id) ? 'active' : null }}"
-               href="{{ route('history.quantity', $productInfo->id) }}" type="button" role="tab">@lang('product.quantity_history')</a>
+            <a class="nav-link {{ request()->is('products/'.$productInfo->id.'/quantity') ? 'active' : null }}"
+               href="{{ route('quantity.show', $productInfo->id) }}" type="button" role="tab">@lang('product.quantity_history')</a>
         </li>
     </ul>
     {{-- Tabs content --}}
     <div class="tab-content" id="productInfoContent">
         {{-- Tab-pan for product details --}}
-        <div class="tab-pane {{ request()->is('info/'.$productInfo->id) ? 'active' : null }}"
-             id="{{ route('info.product', $productInfo->id) }}" role="tabpanel" aria-labelledby="home-info-tab"
+        <div class="tab-pane {{ request()->is('products/'.$productInfo->id) ? 'active' : null }}"
+             id="{{ route('product.show', $productInfo->id) }}" role="tabpanel" aria-labelledby="home-info-tab"
              tabindex="0">
 
             <div class="container-fluid">
@@ -73,9 +75,9 @@
             </div>
         </div>
         {{-- Tab-pan for product Price Chart --}}
-        <div class="tab-pane {{ request()->is('price-history/'.$productInfo->id) ? 'active' : null }}"
-             id="{{ route('history.price', $productInfo->id) }}" role="tabpanel" aria-labelledby="price-tab" tabindex="0">
-            @if(request()->is('price-history/'.$productInfo->id))
+        <div class="tab-pane {{ request()->is('products/'.$productInfo->id.'/price') ? 'active' : null }}"
+             id="{{ route('price.show', $productInfo->id) }}" role="tabpanel" aria-labelledby="price-tab" tabindex="0">
+            @if(request()->is('products/'.$productInfo->id.'/price'))
                 {
                 <div class="container">
                     <p class="text-center">
@@ -86,10 +88,10 @@
             @endif
         </div>
         {{-- Tab-pan for product quantity Chart --}}
-        <div class="tab-pane {{ request()->is('quantity-history/'.$productInfo->id) ? 'active' : null }}"
-             id="{{ route('history.quantity', $productInfo->id) }}" role="tabpanel" aria-labelledby="quantity-tab"
+        <div class="tab-pane {{ request()->is('products/'.$productInfo->id.'/quantity') ? 'active' : null }}"
+             id="{{ route('quantity.show', $productInfo->id) }}" role="tabpanel" aria-labelledby="quantity-tab"
              tabindex="0">
-            @if(request()->is('quantity-history/'.$productInfo->id))
+            @if(request()->is('products/'.$productInfo->id.'/quantity'))
                 {
                 <div class="container">
                     <p class="text-center">
@@ -100,14 +102,18 @@
             @endif
         </div>
     </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-primary me-md-2"
+               href="{{ route('products.index') }}" role="button">Back</a>
+    </div>
     @include('products.footer')
 
-    @if(request()->is('price-history/'.$productInfo->id))
+    @if(request()->is('products/'.$productInfo->id.'/price'))
         {
         {!! $priceChart->script() !!}
         }
     @endif
-    @if(request()->is('quantity-history/'.$productInfo->id))
+    @if(request()->is('products/'.$productInfo->id.'/quantity'))
         {
         {!! $quantityChart->script() !!}
         }

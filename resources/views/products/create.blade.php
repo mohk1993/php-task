@@ -7,7 +7,7 @@
     </x-slot>
     <div class="container-fluid">
         <div class="row mb-3">
-            <form action="{{ route('product.add') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label for="name" class="form-label">@lang('product.name')</label>

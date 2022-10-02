@@ -11,17 +11,11 @@ use App\Services\ProductService;
 class AddPriceToPriceHistoryTable
 {
     /**
-     * @var ProductService
-     */
-    private ProductService $productService;
-
-    /**
      * ProductService constructor
      * @param ProductService $productService
      */
-    public function __construct(ProductService $productService)
+    public function __construct(private ProductService $productService)
     {
-        $this->productService = $productService;
     }
 
     /**

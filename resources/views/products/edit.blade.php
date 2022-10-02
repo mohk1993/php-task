@@ -7,6 +7,10 @@
     </x-slot>
     @include('products.header')
     <div class="container-fluid">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-primary me-md-2"
+               href="{{ route('products.index') }}" role="button">Back</a>
+        </div>
         <div class="row mb-3">
             <form action="{{ route('product.update', $productI->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf

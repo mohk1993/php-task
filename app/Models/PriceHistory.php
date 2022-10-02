@@ -8,10 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class PriceHistory extends Model
 {
     use HasFactory;
-     /**
-     * fillable
-     *
-     * @var array
+
+    /**
+     * @var string[] 
      */
     protected $fillable = [
         'product_id',

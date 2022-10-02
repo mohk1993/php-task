@@ -15,18 +15,11 @@ class PriceHistoryCreated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     *
-     * @var Product
-     */
-    public Product $product;
-
-    /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($product)
+    public function __construct(public Product $product)
     {
-        $this->product = $product;
     }
 }

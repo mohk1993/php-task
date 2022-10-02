@@ -4,25 +4,27 @@ use App\Http\Controllers\Product\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('product')->group(function () {
-    Route::get('view', [ProductController::class, 'view'])
-        ->name('products.view');
+    Route::get('/products', [ProductController::class, 'index'])
+        ->name('products.index');
 
-    Route::get('view-add', [ProductController::class, 'viewAdd'])
-        ->name('product.add.view');
+    Route::get('/products/create', [ProductController::class, 'create'])
+        ->name('product.create');
 
-    Route::get('view-update/{id}', [ProductController::class, 'viewUpdate'])
-        ->name('product.update.view');
+    Route::post('/products', [ProductController::class, 'store'])
+        ->name('product.store');
 
-    Route::post('add', [ProductController::class, 'add'])
-        ->name('product.add');
+    Route::get('/products/{product}', [ProductController::class, 'show'])
+        ->name('product.show');
 
-    Route::post('update/{id}', [ProductController::class, 'update'])
+    Route::get('products/{product}/edit', [ProductController::class, 'edit'])
+        ->name('product.edit');
+
+    Route::put('/products/{product}', [ProductController::class, 'update'])
         ->name('product.update');
 
-    Route::get('delete/{id}', [ProductController::class, 'delete'])
-        ->name('product.delete');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])
+        ->name('product.destroy');
 
-    Route::get('info/{id}', [ProductController::class, 'viewInfo'])->name('info.product');
 });
 
 require __DIR__ . '/price.php';

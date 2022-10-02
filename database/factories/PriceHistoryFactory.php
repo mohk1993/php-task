@@ -15,10 +15,10 @@ class PriceHistoryFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'product_id' => $this->faker->numberBetween(1, 3),
+            'product_id' => $this->faker->numberBetween(1, 10),
             'price' => $this->faker->randomFloat(2, 1, 4),
             'created_at' => $this->faker->dateTimeBetween('-90 days', '+3 days'),
         ];

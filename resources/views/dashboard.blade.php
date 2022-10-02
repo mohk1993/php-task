@@ -10,7 +10,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <a class="btn-primary" href="{{ route('products.view') }}" type="button">@lang('dashboard.manage_products')</a>
+                    <a class="btn-primary" href="{{ route('products.index') }}" type="button">@lang('dashboard.manage_products')</a>
                 </div>
             </div>
         </div>

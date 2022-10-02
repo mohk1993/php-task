@@ -6,20 +6,11 @@ namespace App\Repositories;
 
 use App\Events\PriceHistoryCreated;
 use App\Events\QuantityHistoryCreated;
-use App\Models\PriceHistory;
 use App\Models\Product;
-use App\Models\QuantityHistory;
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class ProductRepository
@@ -28,17 +19,11 @@ use Illuminate\Validation\ValidationException;
 class ProductRepository
 {
     /**
-     * @var Product
-     */
-    protected Product $product;
-
-    /**
      * ProductRepository constructor
      * @param Product $product
      */
-    public function __construct(Product $product)
+    public function __construct(private Product $product)
     {
-        $this->product = $product;
     }
 
     /**
@@ -56,10 +41,9 @@ class ProductRepository
      * Update product data in the DB
      * @param Request $request
      * @param int $id
-     * @param string $getImageUrl
      * @return Product
      */
-    public function update(Request $request, int $id, string $getImageUrl): Product
+    public function update(Request $request, int $id): Product
     {
         $product = $this->product->find($id);
         $product->name = $request['name'];
@@ -68,7 +52,7 @@ class ProductRepository
         $product->color = $request['color'];
         $product->quantity = $request['quantity'];
         $product->price = $request['price'];
-        $product->image = $getImageUrl;
+        $product->image = Storage::putFile('/images', $request->file('image'));
         $product->save();
 
         event(new PriceHistoryCreated($product));
@@ -80,10 +64,9 @@ class ProductRepository
     /**
      * Save Product to DB
      * @param Request $request
-     * @param string $getImageUrl
      * @return Product
      */
-    public function save(Request $request, string $getImageUrl): Product
+    public function save(Request $request): Product
     {
         $product = $this->product;
         $product->name = $request['name'];
@@ -92,59 +75,13 @@ class ProductRepository
         $product->color = $request['color'];
         $product->quantity = $request['quantity'];
         $product->price = $request['price'];
-        $product->image = $getImageUrl;
+        $product->image = $request->file('image')->storePublicly('images', 'public');
         $product->save();
 
         event(new PriceHistoryCreated($product));
         event(new QuantityHistoryCreated($product));
 
         return $product;
-    }
-
-    /**
-     * @param Product $data
-     * @return void
-     */
-    public function addPriceToHistory(Product $data): void
-    {
-        PriceHistory::create([
-            'product_id' => $data->id,
-            'price' => $data->price
-        ]);
-
-        Cache::flush();
-    }
-
-    /**
-     * @param int $id
-     * @return Collection
-     */
-    public function getPriceHistory(int $id): Collection
-    {
-        return PriceHistory::where('product_id', $id)
-            ->where('created_at', '>', Carbon::now()->subDays(90))->pluck('price', 'created_at');
-    }
-
-    /**
-     * @param int $id
-     * @return Collection
-     */
-    public function getQuantityHistory(int $id): Collection
-    {
-        return QuantityHistory::where('product_id', $id)
-            ->where('created_at', '>', Carbon::now()->subDays(90))->pluck('quantity', 'created_at');
-    }
-
-    /**
-     * @param Product $data
-     * @return void
-     */
-    public function addQuantityToHistory(Product $data): void
-    {
-        QuantityHistory::create([
-            'product_id' => $data->id,
-            'quantity' => $data->quantity
-        ]);
     }
 
     /**
@@ -156,7 +93,6 @@ class ProductRepository
     {
         return $this->product::findOrFail($id);
     }
-
 
     /**
      * @param int $id

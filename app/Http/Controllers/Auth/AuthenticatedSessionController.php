@@ -31,23 +31,16 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      *
      * @param LoginRequest $request
-     * @return Application|ResponseFactory|Response
+     * @return RedirectResponse
      * @throws ValidationException
      */
     public function store(LoginRequest $request)
     {
         $request->authenticate();
-        $user = User::where('email', $request->email)->first();
-        $token = $user->createToken('myapp-token')->plainTextToken;
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
 
-        return response($response, 201);
-//        $request->session()->regenerate();
+        $request->session()->regenerate();
 
-//        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**

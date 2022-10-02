@@ -10,19 +10,12 @@ use JsonSerializable;
 
 class ProductCollection extends ResourceCollection
 {
-
-    /**
-     * @var Product
-     */
-    protected Product $product;
-
     /**
      * ProductRepository constructor
      * @param Product $product
      */
-    public function __construct(Product $product)
+    public function __construct(protected Product $product)
     {
-        $this->product = $product;
     }
 
     /**

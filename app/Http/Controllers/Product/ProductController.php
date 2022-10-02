@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,71 +17,30 @@ use Illuminate\View\View;
 class ProductController extends Controller
 {
     /**
-     * @var ProductService
-     */
-    private ProductService $productService;
-
-    /**
      * ProductService constructor
      * @param ProductService $productService
      */
-    public function __construct(ProductService $productService)
+    public function __construct(private ProductService $productService)
     {
-        $this->productService = $productService;
     }
-
 
     /**
      * @return View
      */
-    public function view(): view
+    public function index(): View
     {
         $products = $this->productService->getAll();
 
-        return view('products.products', compact('products'));
-    }
-
-    /**
-     * Redirect to the product details with the resource
-     * @param int $id
-     * @return view
-     */
-    public function viewInfo(int $id): view
-    {
-        $productInfo = $this->getById($id);
-
-        return view('products.product_details', compact('productInfo'));
-    }
-
-    /**
-     * Get the specified product by the id
-     * @param int $id
-     * @return Product
-     */
-    public function getById(int $id): Product
-    {
-        return $this->productService->getById($id);
+        return view('products.index', compact('products'));
     }
 
     /**
      * Redirect to the add_product page
      * @return View
      */
-    public function viewAdd(): View
+    public function create(): View
     {
-        return view('products.add_product');
-    }
-
-    /**
-     * Redirect to the update page
-     * @param int $id
-     * @return View
-     */
-    public function viewUpdate(int $id): View
-    {
-        $productI = $this->productService->getById($id);
-
-        return view('products.update', compact('productI'));
+        return view('products.create');
     }
 
     /**
@@ -90,11 +48,35 @@ class ProductController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function add(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $this->productService->saveData($request);
 
         return redirect()->back();
+    }
+
+    /**
+     * Redirect to the product details with the resource
+     * @param int $id
+     * @return view
+     */
+    public function show(int $id): View
+    {
+        $productInfo = $this->productService->getById($id);
+
+        return view('products.show', compact('productInfo'));
+    }
+
+    /**
+     * Redirect to the update page
+     * @param int $id
+     * @return View
+     */
+    public function edit(int $id): View
+    {
+        $productI = $this->productService->getById($id);
+
+        return view('products.edit', compact('productI'));
     }
 
     /**
@@ -113,12 +95,12 @@ class ProductController extends Controller
     /**
      * Delete product by id
      * @param int $id
-     * @return View
+     * @return RedirectResponse
      */
-    public function delete(int $id): View
+    public function destroy(int $id): RedirectResponse
     {
         $this->productService->deleteById($id);
 
-        return view('dashboard');
+        return redirect()->back();
     }
 }
