@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\PriceHistoryCreated;
+use App\Services\PriceService;
 use App\Services\ProductService;
 
 /**
@@ -12,9 +13,9 @@ class AddPriceToPriceHistoryTable
 {
     /**
      * ProductService constructor
-     * @param ProductService $productService
+     * @param PriceService $priceService
      */
-    public function __construct(private ProductService $productService)
+    public function __construct(private PriceService $priceService)
     {
     }
 
@@ -26,6 +27,6 @@ class AddPriceToPriceHistoryTable
      */
     public function handle(PriceHistoryCreated $event): void
     {
-        $this->productService->addPriceHistory($event->product);
+        $this->priceService->addPriceHistory($event->product);
     }
 }

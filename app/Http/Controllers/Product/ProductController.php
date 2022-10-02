@@ -83,13 +83,13 @@ class ProductController extends Controller
      * Update product data in the DB
      * @param Request $request
      * @param int $id
-     * @return View
+     * @return RedirectResponse
      */
-    public function update(Request $request, int $id): View
+    public function update(Request $request, int $id): RedirectResponse
     {
         $this->productService->update($request, $id);
 
-        return view('products.update');
+        return redirect()->route('products.index');
     }
 
     /**

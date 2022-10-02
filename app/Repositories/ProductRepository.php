@@ -52,7 +52,9 @@ class ProductRepository
         $product->color = $request['color'];
         $product->quantity = $request['quantity'];
         $product->price = $request['price'];
-        $product->image = Storage::putFile('/images', $request->file('image'));
+        if ($request->file('image')) {
+            $product->image = $request->file('image')->storePublicly('images', 'public');
+        }
         $product->save();
 
         event(new PriceHistoryCreated($product));

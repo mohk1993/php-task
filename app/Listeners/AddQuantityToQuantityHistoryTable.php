@@ -3,22 +3,15 @@
 namespace App\Listeners;
 
 use App\Events\QuantityHistoryCreated;
-use App\Services\ProductService;
+use App\Services\QuantityService;
 
 class AddQuantityToQuantityHistoryTable
 {
     /**
-     * @var ProductService
+     * @param QuantityService $quantityService
      */
-    protected ProductService $productService;
-
-
-    /**
-     * @param ProductService $productService
-     */
-    public function __construct(ProductService $productService)
+    public function __construct(private QuantityService $quantityService)
     {
-        $this->productService = $productService;
     }
 
     /**
@@ -29,6 +22,6 @@ class AddQuantityToQuantityHistoryTable
      */
     public function handle(QuantityHistoryCreated $event): void
     {
-        $this->productService->addQuantityHistory($event->product);
+        $this->quantityService->addQuantityHistory($event->product);
     }
 }
